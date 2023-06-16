@@ -49,6 +49,20 @@ to NSA & CISA Kubernetes Hardening Guidance, among others.
 
 Now, please proceed with the security audit of Pod {pod} in namespace {namespace}.'''
 
+_base_analyze_prompt = '''As a skilled technical expert with specialization in
+Kubernetes and cloud native technologies, your task is to conduct diagnostic procedures
+on these technologies. Drawing from your deep understanding of Kubernetes and cloud
+native principles, as well as your troubleshooting experience, you're expected to
+identify potential issues and provide solutions to address them. Your response
+should consist of a detailed, step-by-step analysis of the issues and their respective
+solutions.
+
+Now, please initiate the diagnostic process by retrieving the YAML for
+{resource} {name} in namespace {namespace} using the command
+"kubectl get -n {namespace} {resource} {name} -o yaml".
+Following this, proceed with your analysis.
+'''
+
 
 def get_prompt(instruct):
     return f"{_base_prompt}\nHere are the instructions: {instruct}"
@@ -62,21 +76,5 @@ def get_audit_prompt(namespace, pod):
     return _base_audit_prompt.format(pod=pod, namespace=namespace)
 
 
-def get_planner_prompt():
-    return '''As a technical expert with a deep understanding of Kubernetes and
-cloud native networking, please assist with diagnosing and resolving common questions
-and issues related to these areas. The required approach should involve a detailed,
-step-by-step plan which can guide users in troubleshooting and resolving the
-identified questions. The communication should be accessible to both technical
-and non-technical users, providing clear and comprehensible explanations of
-complex concepts and solutions.
-
-To start, please help us understand the specific issue at hand and formulate a
-suitable plan for its resolution. Please present this plan under the header 'Plan:',
-formatted as a numbered list of steps. This plan should be as concise as possible
-while ensuring that it includes all necessary actions for accurate task completion.
-If a kubectl command is needed in any of the steps, please explicitly include
-'kubectl execute step' in the plan. If the task is question-oriented, the final
-step should generally be 'Given the above steps taken, please respond to the users original question'.
-Upon completion of the plan, please mark its conclusion with '<END_OF_PLAN>'."
-'''
+def get_analyze_prompt(namespace, resource, name):
+    return _base_analyze_prompt.format(namespace=namespace, resource=resource, name=name)
