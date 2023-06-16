@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "main"
+      - "AutoGPT"
 
 env:
   REGISTRY: ghcr.io
@@ -27,5 +27,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/kube-copilot .
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/kube-copilot
+          docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/kube-copilot:autogpt .
+          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/kube-copilot:autogpt

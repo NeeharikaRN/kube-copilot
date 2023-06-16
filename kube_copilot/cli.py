@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import resource
 import sys
 import click
 from kube_copilot.llm import init_openai
@@ -8,6 +9,7 @@ from kube_copilot.agent import CopilotLLM
 from kube_copilot.prompts import (
     get_prompt,
     get_diagnose_prompt,
+    get_analyze_prompt,
     get_audit_prompt
 )
 
@@ -74,6 +76,18 @@ def audit(namespace, pod, verbose, model):
     '''Audit security issues for a Pod'''
     chain = get_llm_chain(verbose, model)
     result = chain.run(get_audit_prompt(namespace, pod))
+    print(result)
+
+
+@cli.command(help="analyze issues for a given resource")
+@click.argument('resource')
+@click.argument('name')
+@click.argument('namespace', default="default")
+@add_options(cmd_options)
+def analyze(resource, namespace, name, verbose, model):
+    '''Analyze potential issues for a given resource'''
+    chain = get_llm_chain(verbose, model)
+    result = chain.run(get_analyze_prompt(namespace, resource, name))
     print(result)
 
 
